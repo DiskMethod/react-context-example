@@ -1,35 +1,35 @@
 import React from "react";
+import { ThemeContext, themes } from "./context/theme-context";
+import ThemedButton from "./components/themed-button";
+
 import "./App.css";
 
-const ThemeContext = React.createContext("light");
+function Toolbar(props) {
+  return <ThemedButton onClick={props.changeTheme}>Change Theme</ThemedButton>;
+}
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      theme: themes.light,
+    };
+    this.toggleTheme = this.toggleTheme.bind(this);
+  }
+
+  toggleTheme() {
+    this.setState((state) => ({
+      theme: state.theme === themes.dark ? themes.light : themes.dark,
+    }));
+  }
+
   render() {
     return (
-      <ThemeContext.Provider value="dark">
-        <Toolbar />
+      <ThemeContext.Provider value={this.state.theme}>
+        <Toolbar changeTheme={this.toggleTheme} />
       </ThemeContext.Provider>
     );
   }
 }
-
-function Toolbar() {
-  return (
-    <div>
-      <ThemedButton />
-    </div>
-  );
-}
-
-class ThemedButton extends React.Component {
-  // Subscribes this component to ThemeContext
-  static contextType = ThemeContext;
-
-  render() {
-    return <button>The context is = {this.context}</button>;
-  }
-}
-// Alternative way to subscribe
-// ThemedButton.contextType = ThemeContext
 
 export default App;
